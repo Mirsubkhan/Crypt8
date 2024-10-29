@@ -17,8 +17,9 @@ namespace DataAccess.Configurations
 
             builder.Property(u => u.Name)
                 .HasMaxLength(100);
-
-            builder.ToTable("coins");
+            
+            builder.HasIndex(c => c.Name)
+                .IsUnique();
         }
     }
 }

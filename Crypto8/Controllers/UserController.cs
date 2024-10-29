@@ -11,13 +11,13 @@ namespace Crypt8.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AccountController: ControllerBase
+public class UserController: ControllerBase
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _config;
 
-    public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config)
+    public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config)
     {
         _userManager = userManager;
         _signInManager = signInManager;

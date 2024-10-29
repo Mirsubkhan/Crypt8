@@ -7,44 +7,43 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessLogic.Services.Entities
+namespace BusinessLogic.Services.Entities;
+
+public class UserService: IUserService
 {
-    public class UserService: IUserService
+    private readonly IUserRepository _userRepository;
+
+    public UserService(IUserRepository userRepository)
     {
-        private readonly IUserRepository _userRepository;
+        _userRepository = userRepository;
+    }
 
-        public UserService(IUserRepository userRepository)
+    public async Task CreateAsync(UserDto userDto, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(userDto.Username) || string.IsNullOrWhiteSpace(userDto.Email))
         {
-            _userRepository = userRepository;
+            throw new ArgumentException("User's username or email cannot be null or empty.");
         }
 
-        public async Task CreateAsync(UserDto userDto, CancellationToken cancellationToken = default)
+        User user = new User
         {
-            if (string.IsNullOrWhiteSpace(userDto.Username) || string.IsNullOrWhiteSpace(userDto.Email))
-            {
-                throw new ArgumentException("User's username or email cannot be null or empty.");
-            }
+            Email = userDto.Email,
+            UserName = userDto.Username,
+            PasswordHash = userDto.Password
+        };
 
-            User user = new User
-            {
-                Email = userDto.Email,
-                UserName = userDto.Username,
-                PasswordHash = userDto.Password
-            };
+        await _userRepository.CreateAsync(user, cancellationToken);
+    }
 
-            await _userRepository.CreateAsync(user, cancellationToken);
+    public async Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var user = await _userRepository.GetByIdAsync(id, cancellationToken);
+
+        if (user == null)
+        {
+            throw new KeyNotFoundException("User not found");
         }
 
-        public async Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            var user = await _userRepository.GetByIdAsync(id, cancellationToken);
-
-            if (user == null)
-            {
-                throw new KeyNotFoundException("User not found");
-            }
-
-            return user;
-        }
+        return user;
     }
 }

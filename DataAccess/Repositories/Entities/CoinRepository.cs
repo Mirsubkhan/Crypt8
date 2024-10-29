@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
+
 
 namespace DataAccess.Repositories.Entities
 {
@@ -19,8 +21,13 @@ namespace DataAccess.Repositories.Entities
 
         public async Task CreateAsync(Coin coin, CancellationToken cancellationToken = default)
         {
-            // await _context.Coins.AddAsync(coin);
+            await _context.Coins.AddAsync(coin);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Coin> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+        {
+            return await _context.Coins.FirstOrDefaultAsync(c => c.Name == name);
         }
     }
 }

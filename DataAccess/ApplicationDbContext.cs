@@ -13,12 +13,14 @@ namespace DataAccess
     public class ApplicationDbContext : IdentityDbContext<User>
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Coin> Coins { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new UserConfiguration());
+            builder.ApplyConfiguration(new CoinConfiguration());
 
             base.OnModelCreating(builder);
         }
