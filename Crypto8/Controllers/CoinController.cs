@@ -18,7 +18,7 @@ public class CoinController: ControllerBase
         _coinMarketCapService = coinMarketCapService;
     }
 
-    [HttpPost("Compare")]
+    [HttpGet("Compare")]
     public async Task<IActionResult> GetMarketCapOf(string coinName1, string coinName2)
     {
         if (string.IsNullOrWhiteSpace(coinName1) || string.IsNullOrWhiteSpace(coinName2))
