@@ -29,5 +29,6 @@ namespace DataAccess.Repositories.Entities
         {
             return await _context.Coins.FirstOrDefaultAsync(c => c.Name == name);
         }
+
     }
 }

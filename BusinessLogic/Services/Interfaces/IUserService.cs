@@ -10,5 +10,6 @@ namespace BusinessLogic.Services.Interfaces;
 public interface IUserService
 {
     Task CreateAsync(UserDto userDto, CancellationToken cancellationToken = default);
+
     Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 }

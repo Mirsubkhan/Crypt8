@@ -29,5 +29,6 @@ namespace DataAccess.Repositories.Entities
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
         }
+
     }
 }
