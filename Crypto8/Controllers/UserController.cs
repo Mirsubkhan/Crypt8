@@ -61,7 +61,6 @@ public class UserController: ControllerBase
 
         return Unauthorized();
     }
-
     private string GenerateJwtToken(User user)
     {
         var claims = new[]

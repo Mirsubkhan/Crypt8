@@ -27,7 +27,6 @@ public class CoinMarketCapService: ICoinMarketCapService
         _httpClient.DefaultRequestHeaders.Add("X-CMC_PRO_API_KEY", "9ca43cc8-c5fd-4049-9bb3-3df4de6d2e74");
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }
-
     public async Task CreateAsync(CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync("/v1/cryptocurrency/listings/latest?=limit=100");
