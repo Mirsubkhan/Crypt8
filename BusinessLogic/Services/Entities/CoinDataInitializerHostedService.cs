@@ -22,8 +22,7 @@ public class CoinDataInitializerHostedService : IHostedService
         {
             var coinService = scope.ServiceProvider.GetRequiredService<ICoinMarketCapService>();
             var coinRepository = scope.ServiceProvider.GetRequiredService<ICoinRepository>();
-
-            // Проверка, если данные о монетах уже есть
+            
             var existingCoins = await coinRepository.GetAllAsync(cancellationToken);
             if (existingCoins == null || !existingCoins.Any())
             {
