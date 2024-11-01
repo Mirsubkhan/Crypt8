@@ -8,26 +8,30 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 
 
-namespace DataAccess.Repositories.Entities
+namespace DataAccess.Repositories.Entities;
+
+public class CoinRepository : ICoinRepository
 {
-    public class CoinRepository : ICoinRepository
+    private readonly ApplicationDbContext _context;
+
+    public CoinRepository(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public CoinRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+    public async Task CreateAsync(Coin coin, CancellationToken cancellationToken = default)
+    {
+        await _context.Coins.AddAsync(coin);
+        await _context.SaveChangesAsync();
+    }
 
-        public async Task CreateAsync(Coin coin, CancellationToken cancellationToken = default)
-        {
-            await _context.Coins.AddAsync(coin);
-            await _context.SaveChangesAsync();
-        }
+    public async Task<Coin> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    {
+        return await _context.Coins.FirstOrDefaultAsync(c => c.Name == name);
+    }
 
-        public async Task<Coin> GetByNameAsync(string name, CancellationToken cancellationToken = default)
-        {
-            return await _context.Coins.FirstOrDefaultAsync(c => c.Name == name);
-        }
+    public async Task<IEnumerable<Coin>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Coins.ToListAsync(cancellationToken);
     }
 }
