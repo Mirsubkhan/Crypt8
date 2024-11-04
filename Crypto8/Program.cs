@@ -7,9 +7,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using BusinessLogic.Services.Entities;
+using BusinessLogic.Services.Interfaces;
+using DataAccess.Repositories.Entities;
+using DataAccess.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<ICoinMarketCapService, CoinMarketCapService>();
+builder.Services.AddScoped<ICoinRepository, CoinRepository>();
+builder.Services.AddScoped<ICoinMarketCapService, CoinMarketCapService>();
+builder.Services.AddScoped<ICoinRepository, CoinRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
