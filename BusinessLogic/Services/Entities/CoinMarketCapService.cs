@@ -29,7 +29,7 @@ public class CoinMarketCapService: ICoinMarketCapService
     }
     public async Task CreateAsync(CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.GetAsync("/v1/cryptocurrency/listings/latest?=limit=100");
+        var response = await _httpClient.GetAsync("/v1/cryptocurrency/listings/latest?limit=100");
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync();
@@ -57,7 +57,7 @@ public class CoinMarketCapService: ICoinMarketCapService
 
         if (coin == null)
         {
-            throw new KeyNotFoundException("User not found");
+            throw new KeyNotFoundException("Coin not found");
         }
 
         return coin;

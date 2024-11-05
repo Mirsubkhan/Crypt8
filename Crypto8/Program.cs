@@ -15,8 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ICoinMarketCapService, CoinMarketCapService>();
 builder.Services.AddScoped<ICoinRepository, CoinRepository>();
-builder.Services.AddScoped<ICoinMarketCapService, CoinMarketCapService>();
-builder.Services.AddScoped<ICoinRepository, CoinRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 

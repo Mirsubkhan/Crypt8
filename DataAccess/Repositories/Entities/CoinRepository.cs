@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace DataAccess.Repositories.Entities;
@@ -25,7 +25,7 @@ public class CoinRepository : ICoinRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Coin> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<Coin?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
         return await _context.Coins.FirstOrDefaultAsync(c => c.Name == name);
     }
