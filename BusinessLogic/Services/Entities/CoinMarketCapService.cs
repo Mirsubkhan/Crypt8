@@ -1,13 +1,8 @@
 ﻿using BusinessLogic.Services.Interfaces;
 using DataAccess.Models;
 using DataAccess.Repositories.Interfaces;
-using Microsoft.AspNet.Identity;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 
 namespace BusinessLogic.Services.Entities;
@@ -29,12 +24,20 @@ public class CoinMarketCapService: ICoinMarketCapService
     }
     public async Task CreateAsync(CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.GetAsync("/v1/cryptocurrency/listings/latest?limit=100");
-        response.EnsureSuccessStatusCode();
+        Console.WriteLine("Attempting to fetch data from CoinMarketCap API...");
+
+        var response = await _httpClient.GetAsync("/v1/cryptocurrency/listings/latest?limit=100", cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Failed to fetch data: {response.ReasonPhrase}");
+            throw new Exception($"Failed to fetch data: {response.ReasonPhrase}");
+        }
 
         var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<CoinMarketCapResponse>(content);
+        Console.WriteLine("Raw API Response: " + content);
 
+        var result = JsonSerializer.Deserialize<CoinMarketCapResponse>(content);
         if (result?.Data != null)
         {
             foreach (var coinData in result.Data)
@@ -47,7 +50,13 @@ public class CoinMarketCapService: ICoinMarketCapService
                     Price = coinData.Quote.USD.Price
                 };
                 await _coinRepository.CreateAsync(coin);
+                Console.WriteLine($"Saved coin: {coin.Name}");
             }
+            Console.WriteLine("All coins saved successfully.");
+        }
+        else
+        {
+            Console.WriteLine("No data received from CoinMarketCap.");
         }
     }
 
