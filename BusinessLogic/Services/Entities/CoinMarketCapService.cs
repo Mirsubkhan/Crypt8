@@ -35,13 +35,14 @@ public class CoinMarketCapService: ICoinMarketCapService
         }
 
         var content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine("Raw API Response: " + content);
+        Console.WriteLine("Raw API Response");
 
         var result = JsonSerializer.Deserialize<CoinMarketCapResponse>(content);
         if (result?.Data != null)
         {
             foreach (var coinData in result.Data)
             {
+                //Console.WriteLine(string.Format("Name: {0}\nMCAP: {1}\nTOTAL SUPPLY: {2}\nPRICE: {3}\n\n\n", coinData.Name, coinData.Quote.USD.MarketCap, coinData.TotalSupply, coinData.Quote.USD.Price));
                 var coin = new Coin
                 {
                     Name = coinData.Name,
