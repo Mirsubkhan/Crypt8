@@ -29,4 +29,9 @@ public class CoinRepository : ICoinRepository
     {
         return await _context.Coins.ToListAsync(cancellationToken);
     }
+
+    public async Task<Coin?> GetBySymbolAsync(string symbol, CancellationToken cancellationToken = default)
+    {
+        return await _context.Coins.FirstOrDefaultAsync(c => c.Symbol == symbol);
+    }
 }

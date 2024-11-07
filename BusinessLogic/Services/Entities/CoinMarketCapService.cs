@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace BusinessLogic.Services.Entities;
 
-public class CoinMarketCapService: ICoinMarketCapService
+public class CoinMarketCapService : ICoinMarketCapService
 {
     private readonly ICoinRepository _coinRepository;
     private readonly HttpClient _httpClient;
@@ -46,8 +46,9 @@ public class CoinMarketCapService: ICoinMarketCapService
                 var coin = new Coin
                 {
                     Name = coinData.Name,
+                    Symbol = coinData.Symbol,
                     MarketCap = coinData.Quote.USD.MarketCap,
-                    TotalSupply = coinData.TotalSupply,
+                    TotalSupply = coinData.CirculatingSupply,
                     Price = coinData.Quote.USD.Price
                 };
                 await _coinRepository.CreateAsync(coin);
@@ -67,7 +68,19 @@ public class CoinMarketCapService: ICoinMarketCapService
 
         if (coin == null)
         {
-            throw new KeyNotFoundException("Coin not found");
+            return null;
+        }
+
+        return coin;
+    }
+
+    public async Task<Coin> GetBySymbolAsync(string symbol, CancellationToken cancellationToken = default)
+    {
+        var coin = await _coinRepository.GetBySymbolAsync(symbol, cancellationToken);
+
+        if (coin == null)
+        {
+            return null;
         }
 
         return coin;

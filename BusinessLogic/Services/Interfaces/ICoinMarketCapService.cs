@@ -6,4 +6,5 @@ public interface ICoinMarketCapService
 {
     Task CreateAsync(CancellationToken cancellationToken = default);
     Task<Coin> GetByNameAsync(string name, CancellationToken cancellationToken = default);
+    Task<Coin?> GetBySymbolAsync(string symbol, CancellationToken cancellationToken = default);
 }

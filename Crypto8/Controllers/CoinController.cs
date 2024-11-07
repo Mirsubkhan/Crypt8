@@ -29,7 +29,7 @@ public class CoinController: ControllerBase
     }
 
     [HttpGet("compare")]
-    public async Task<IActionResult> CompareCoins(string coin1, string coin2, CancellationToken cancellationToken)
+    public async Task<IActionResult> CompareMarketCapOfTwoCoins(string coin1, string coin2, CancellationToken cancellationToken)
     {
         try
         {
@@ -38,14 +38,24 @@ public class CoinController: ControllerBase
 
             if (firstCoin == null || secondCoin == null)
             {
-                return NotFound("One or both coins were not found.");
+                firstCoin = await _coinService.GetBySymbolAsync(coin1, cancellationToken);
+                secondCoin = await _coinService.GetBySymbolAsync(coin2, cancellationToken);
+
+                if (firstCoin == null || secondCoin == null)
+                {
+                    return NotFound("Coin Not Found");   
+                }
             }
 
-            var comparisonResult = firstCoin.Price > secondCoin.Price
-                ? $"{coin1} is more expensive than {coin2}"
-                : $"{coin2} is more expensive than {coin1}";
+            var aWithMarketCapB = firstCoin.MarketCap / secondCoin.TotalSupply;
 
-            return Ok(comparisonResult);
+            return Ok(new {
+                ASymbol = firstCoin.Symbol,
+                BSymbol = secondCoin.Symbol,
+                AWithMarketCapB = aWithMarketCapB.ToString("F2"),
+                BX = (aWithMarketCapB / secondCoin.Price).ToString("F2"),
+                AX = (secondCoin.Price / aWithMarketCapB).ToString("F2")
+            });
         }
         catch (KeyNotFoundException ex)
         {
