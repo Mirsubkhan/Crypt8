@@ -13,6 +13,7 @@ using DataAccess.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRazorPages();
 builder.Services.AddScoped<ICoinMarketCapService, CoinMarketCapService>();
 builder.Services.AddScoped<ICoinRepository, CoinRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -92,5 +93,12 @@ app.UseRouting();
 
 app.UseAuthorization();
 app.UseAuthentication();
+
+app.MapRazorPages();
+app.MapGet("/", async context =>
+{
+    context.Response.Redirect("/Index");
+    await Task.CompletedTask;
+});
 
 app.Run();
