@@ -14,6 +14,7 @@ namespace DataAccess
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Coin> Coins { get; set; }
+        public DbSet<CompareHistory> CompareHistories { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -21,6 +22,7 @@ namespace DataAccess
         {
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new CoinConfiguration());
+            builder.ApplyConfiguration(new CompareHistoryConfiguration());
 
             base.OnModelCreating(builder);
         }

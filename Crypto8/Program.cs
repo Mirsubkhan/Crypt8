@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Регистрация зависимостей
 builder.Services.AddScoped<ICoinMarketCapService, CoinMarketCapService>();
 builder.Services.AddScoped<ICoinRepository, CoinRepository>();
+builder.Services.AddScoped<ICompareHistoryRepository, CompareHistoryRepository>();
 builder.Services.AddHostedService<CoinDataInitializerHostedService>();
 
 // Настройка Identity и базы данных

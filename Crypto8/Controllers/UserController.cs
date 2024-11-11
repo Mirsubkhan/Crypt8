@@ -6,6 +6,7 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using DataAccess.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Crypt8.Controllers;
 
