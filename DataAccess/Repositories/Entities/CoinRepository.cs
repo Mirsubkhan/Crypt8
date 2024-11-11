@@ -20,18 +20,13 @@ public class CoinRepository : ICoinRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Coin?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<Coin?> GetByNameOrSymbolAsync(string name, CancellationToken cancellationToken = default)
     {
-        return await _context.Coins.FirstOrDefaultAsync(c => c.Name == name);
+        return await _context.Coins.FirstOrDefaultAsync(c => c.Name == name || c.Symbol == name);
     }
 
     public async Task<IEnumerable<Coin>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Coins.ToListAsync(cancellationToken);
-    }
-
-    public async Task<Coin?> GetBySymbolAsync(string symbol, CancellationToken cancellationToken = default)
-    {
-        return await _context.Coins.FirstOrDefaultAsync(c => c.Symbol == symbol);
     }
 }

@@ -26,6 +26,10 @@ public class CoinDataInitializerHostedService : IHostedService
             {
                 await coinService.CreateAsync(cancellationToken);
             }
+            else
+            {
+                Console.WriteLine($"Coins already exist in the database: {existingCoins.Count()}");
+            }
         }
     }
 

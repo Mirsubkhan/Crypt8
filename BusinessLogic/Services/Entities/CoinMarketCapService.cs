@@ -35,14 +35,12 @@ public class CoinMarketCapService : ICoinMarketCapService
         }
 
         var content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine("Raw API Response");
 
         var result = JsonSerializer.Deserialize<CoinMarketCapResponse>(content);
         if (result?.Data != null)
         {
             foreach (var coinData in result.Data)
             {
-                //Console.WriteLine(string.Format("Name: {0}\nMCAP: {1}\nTOTAL SUPPLY: {2}\nPRICE: {3}\n\n\n", coinData.Name, coinData.Quote.USD.MarketCap, coinData.TotalSupply, coinData.Quote.USD.Price));
                 var coin = new Coin
                 {
                     Name = coinData.Name,
@@ -62,25 +60,13 @@ public class CoinMarketCapService : ICoinMarketCapService
         }
     }
 
-    public async Task<Coin> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<Coin> GetByNameOrSymbolAsync(string name, CancellationToken cancellationToken = default)
     {
-        var coin = await _coinRepository.GetByNameAsync(name, cancellationToken);
+        var coin = await _coinRepository.GetByNameOrSymbolAsync(name, cancellationToken);
 
         if (coin == null)
         {
-            return null;
-        }
-
-        return coin;
-    }
-
-    public async Task<Coin> GetBySymbolAsync(string symbol, CancellationToken cancellationToken = default)
-    {
-        var coin = await _coinRepository.GetBySymbolAsync(symbol, cancellationToken);
-
-        if (coin == null)
-        {
-            return null;
+            throw new Exception("Coin Not Found");
         }
 
         return coin;

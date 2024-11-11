@@ -13,18 +13,19 @@ using DataAccess.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorPages();
+// Регистрация зависимостей
 builder.Services.AddScoped<ICoinMarketCapService, CoinMarketCapService>();
 builder.Services.AddScoped<ICoinRepository, CoinRepository>();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHostedService<CoinDataInitializerHostedService>();
 
+// Настройка Identity и базы данных
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddHostedService<CoinDataInitializerHostedService>();
-
+// Настройка аутентификации
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -56,6 +57,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Добавление контроллеров и Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -65,40 +67,28 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseDeveloperExceptionPage();
-//    app.UseSwagger();
-//    app.UseSwaggerUI(c =>
-//        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Crypto8 API v1");
-//        c.RoutePrefix = string.Empty;
-//    });
-//}
-//else
-//{
-//    app.UseExceptionHandler("/Home/Error");
-//    app.UseHsts();
-//}
-
-if (!app.Environment.IsDevelopment())
+// Настройка среды
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Crypto8 API v1");
+        c.RoutePrefix = string.Empty;
+    });
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
 app.UseRouting();
-
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapRazorPages();
-app.MapGet("/", async context =>
-{
-    context.Response.Redirect("/Index");
-    await Task.CompletedTask;
-});
+
+app.MapControllers();
 
 app.Run();

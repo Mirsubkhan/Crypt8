@@ -21,45 +21,30 @@ public class CoinController: ControllerBase
     public async Task<IActionResult> GetAllCoins(CancellationToken cancellationToken)
     {
         var coins = await _coinRepository.GetAllAsync(cancellationToken);
+
         if (coins == null || !coins.Any())
         {
+            Console.WriteLine("No coins found in database.");
             return NotFound("No coins found in the database.");
         }
+
         return Ok(coins);
     }
 
     [HttpGet("compare")]
     public async Task<IActionResult> CompareMarketCapOfTwoCoins(string coin1, string coin2, CancellationToken cancellationToken)
     {
-        try
-        {
-            var firstCoin = await _coinService.GetByNameAsync(coin1, cancellationToken);
-            var secondCoin = await _coinService.GetByNameAsync(coin2, cancellationToken);
+        var firstCoin = await _coinService.GetByNameOrSymbolAsync(coin1, cancellationToken);
+        var secondCoin = await _coinService.GetByNameOrSymbolAsync(coin2, cancellationToken);
 
-            if (firstCoin == null || secondCoin == null)
-            {
-                firstCoin = await _coinService.GetBySymbolAsync(coin1, cancellationToken);
-                secondCoin = await _coinService.GetBySymbolAsync(coin2, cancellationToken);
+        var aWithMarketCapB = firstCoin.MarketCap / secondCoin.TotalSupply;
 
-                if (firstCoin == null || secondCoin == null)
-                {
-                    return NotFound("Coin Not Found");   
-                }
-            }
-
-            var aWithMarketCapB = firstCoin.MarketCap / secondCoin.TotalSupply;
-
-            return Ok(new {
-                ASymbol = firstCoin.Symbol,
-                BSymbol = secondCoin.Symbol,
-                AWithMarketCapB = aWithMarketCapB.ToString("F2"),
-                BX = (aWithMarketCapB / secondCoin.Price).ToString("F2"),
-                AX = (secondCoin.Price / aWithMarketCapB).ToString("F2")
-            });
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(new {
+            ACoinSymbol = firstCoin.Symbol,
+            BCoinSymbol = secondCoin.Symbol,
+            ACoinWithMarketCapOfBCoin = aWithMarketCapB.ToString("F2"),
+            NumberOfA_X = (aWithMarketCapB / secondCoin.Price).ToString("F2"),
+            NumberOfB_X = (secondCoin.Price / aWithMarketCapB).ToString("F2")
+        });
     }
 }
